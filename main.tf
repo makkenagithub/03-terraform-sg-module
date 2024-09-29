@@ -3,7 +3,19 @@ resource "aws_security_group" "allow_tls" {
   description = "Allow TLS inbound traffic and all outbound traffic"
   vpc_id      = var.vpc_id
 
-  tags = {
-    Name = "allow_tls"
+  #egress is common everywhere , so we ad it in module
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
   }
+
+  tags = merge(
+    var.common_tags,
+    var.sg_tags,
+    {
+    Name = local.sg_final_name
+    }
+  )
 }
